@@ -3,6 +3,7 @@ import {User} from "../db.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import zod from "zod";
+import {authMiddleware} from "../middleware.js";
 
 const router = Router();
 
@@ -38,15 +39,11 @@ router.post("/signup", async(req, res) => {
         lastName
     });
 
-    const userid = username._id;
-
-    const token = jwt.sign({
-        userid
-    }, JWT_SECRET);
+   
 
     res.status(200).send({
         message: "User created successfully",
-        token: token
+        userid : newUser._id
     })
 
 })
@@ -92,6 +89,29 @@ router.post("/signin", async(req, res) => {
         message: "Inavlid credentials"
     })
 })
+
+const updateBody = zod.object({
+    username : zod.string().email().optional(),
+    firstName : zod.string().optional(),
+    lastName : zod.string().optional(),
+    password : zod.string().optional(),
+})
+
+router.put("/update", authMiddleware, async(req, res) => {
+    const {success} = updateBody.safeParse(req.body);
+    if(!success){
+        res.status(411).send({
+            message: "Incorrect inputs"
+        })
+    }
+
+    await User.updateOne({_id: req.userid}, req.body);
+
+    res.status(200).send({
+        message: "User updated successfully"
+    })
+})
+
 
 
 
