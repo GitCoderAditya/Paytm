@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {User, Account} from "../db.js";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config.js";
+import  JWT_SECRET  from "../config.js";
 import zod from "zod";
-import {authMiddleware} from "../middleware.js";
-import mongoose from "mongoose";
+import authMiddleware from "../middleware.js";
+
 
 const router = Router();
 

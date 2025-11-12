@@ -1,4 +1,18 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, mongoose } from 'mongoose';
+
+mongoose.connect("mongodb://localhost:27017/paytm");
+
+mongoose.connection.on('connected', () => {
+  console.log('✅ MongoDB connected successfully');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.log('❌ MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️ MongoDB disconnected');
+});
 
 const userSchema = new Schema({
   username: {
@@ -31,7 +45,7 @@ const userSchema = new Schema({
 
 const accountSchema = new Schema({
   userid: {
-    type: mongoose.Schema.Types.Objectid,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
@@ -45,7 +59,7 @@ const accountSchema = new Schema({
 const Account = model('Account', accountSchema);
 const User = model('User', userSchema);
 
-export default {
+export {
   Account,
     User
 }
