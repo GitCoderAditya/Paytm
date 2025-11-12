@@ -1,9 +1,10 @@
 import { Router } from "express";
-import {User} from "../db.js";
+import {User, Account} from "../db.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import zod from "zod";
 import {authMiddleware} from "../middleware.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
@@ -38,6 +39,13 @@ router.post("/signup", async(req, res) => {
         firstName,
         lastName
     });
+
+    const userid = newUser._id;
+
+    await Account.create({
+        userid,
+        balance: 1 + Math.random() * 10000
+    })
 
    
 
